@@ -25,6 +25,13 @@ class CarsView(APIView):
             return Cars.objects.get(pk=pk)
         except Cars.DoesNotExist:
             return None
+    def patch(self, request, pk):
+        car = self.get_object(pk)
+        serializer = Cars(car, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
     def put(self, request, pk):
         snippet = self.get_object(pk=pk)
         serializer = StudentSerializer(snippet, data=request.data)
